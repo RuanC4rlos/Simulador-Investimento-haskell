@@ -6,40 +6,6 @@ import IOUtils
 import Text.Printf
 import Data.Char (isDigit)
 
--- Função para verificar se uma string representa um número válido
-isValidDouble :: String -> Bool
-isValidDouble s = case reads s :: [(Double, String)] of
-    [(n, "")] -> n >= 0
-    _         -> False
-
--- Função para ler e validar um número positivo (pode ser decimal)
-readPositiveDouble :: String -> IO Double
-readPositiveDouble prompt = do
-    putStrLn prompt
-    input <- getLine
-    if isValidDouble input
-       then return (read input :: Double)
-       else do
-           putStrLn "Entrada inválida. Por favor, digite um número válido."
-           readPositiveDouble prompt
-
--- Função para verificar se uma string representa um número inteiro válido
-isValidInt :: String -> Bool
-isValidInt s = case reads s :: [(Int, String)] of
-    [(n, "")] -> n >= 0
-    _         -> False
-
--- Função para ler e validar um número inteiro positivo
-readPositiveInt :: String -> IO Int
-readPositiveInt prompt = do
-    putStrLn prompt
-    input <- getLine
-    if isValidInt input
-       then return (read input :: Int)
-       else do
-           putStrLn "Entrada inválida. Por favor, digite um número válido."
-           readPositiveInt prompt
-
 -- Função auxiliar principal com histórico
 mainAux :: [Simulacao] -> [SimulacaoDividendos] -> IO ()
 mainAux historico historicoDividendos = do
@@ -66,12 +32,14 @@ mainAux historico historicoDividendos = do
             meses <- readPositiveInt "Informe o número de meses de investimento:"
             aporteMensal <- readPositiveDouble "Informe o aporte mensal:"
 
-            let rendimentoPoupanca = calcularRendimentoPoupanca valorInicial meses aporteMensal
-
+            let investimentoPoupanca = Poupanca 0.005 -- Taxa de juros mensal da poupança (0,5%)
+                rendimentoPoupanca = calcularRendimento investimentoPoupanca valorInicial meses aporteMensal
+            
             putStrLn $ "Rendimento na poupança: R$ " ++ printf "%.2f" rendimentoPoupanca
             putStrLn "-----------------------------------------------------------\n"
-
-            let simulacaoPoupanca = Simulacao "Poupança" (show valorInicial) (show meses) (show aporteMensal) rendimentoPoupanca
+            let totalInvestido = valorInicial + fromIntegral meses * aporteMensal 
+    
+            let simulacaoPoupanca = Simulacao "Poupança" (show valorInicial) (show meses) (show aporteMensal) rendimentoPoupanca totalInvestido
                 historicoAtualizado = simulacaoPoupanca : historico
             mainAux historicoAtualizado historicoDividendos
 
@@ -90,8 +58,9 @@ mainAux historico historicoDividendos = do
 
             putStrLn $ "Rendimento no CDB: R$ " ++ printf "%.2f" rendimentoCDB
             putStrLn "-----------------------------------------------------------\n"
-
-            let simulacaoCDB = Simulacao "CDB" (show valorInicial) (show meses) (show aporteMensal) rendimentoCDB
+            let totalInvestido = valorInicial + fromIntegral meses * aporteMensal 
+    
+            let simulacaoCDB = Simulacao "CDB" (show valorInicial) (show meses) (show aporteMensal) rendimentoCDB totalInvestido
                 historicoAtualizado = simulacaoCDB : historico
             mainAux historicoAtualizado historicoDividendos
 
@@ -111,7 +80,9 @@ mainAux historico historicoDividendos = do
             putStrLn $ "Rendimento na LCI: R$ " ++ printf "%.2f" rendimentoLCI
             putStrLn "-----------------------------------------------------------\n"
 
-            let simulacaoLCI = Simulacao "LCI" (show valorInicial) (show meses) (show aporteMensal) rendimentoLCI
+            let totalInvestido = valorInicial + fromIntegral meses * aporteMensal 
+    
+            let simulacaoLCI = Simulacao "LCI" (show valorInicial) (show meses) (show aporteMensal) rendimentoLCI totalInvestido
                 historicoAtualizado = simulacaoLCI : historico
             mainAux historicoAtualizado historicoDividendos
 
@@ -138,7 +109,6 @@ mainAux historico historicoDividendos = do
                 historicoDividendosAtualizado = simulacaoDividendos : historicoDividendos
             mainAux historico historicoDividendosAtualizado
 
-        -- Adicione as opções restantes aqui
         "5" -> do
             exibirHistorico historico historicoDividendos
             mainAux historico historicoDividendos

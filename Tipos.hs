@@ -9,6 +9,7 @@ module Tipos
 -- Definindo tipos algébricos
 data Investimento = LCI { taxaLCI :: Double }
                   | CDB { taxaCDB :: Double }
+                  | Poupanca { taxaPoupanca :: Double }
                   deriving Show
 
 data Simulacao = Simulacao
@@ -17,6 +18,7 @@ data Simulacao = Simulacao
     , meses :: String
     , aporteMensal :: String
     , rendimento :: Double
+    , totalInvestido :: Double
     } deriving Show
 
 data SimulacaoDividendos = SimulacaoDividendos
