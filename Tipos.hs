@@ -32,6 +32,3 @@ data SimulacaoDividendos = SimulacaoDividendos
 -- Definindo uma classe de tipo para investimentos
 class Investivel a where
     calcularRendimento :: a -> Double -> Int -> Double -> Double
-
-
-

@@ -36,10 +36,11 @@ exibirSimulacaoDividendos (SimulacaoDividendos nome cotacao dividendos valorMedi
 -- Função para limpar a tela
 clearScreen :: IO ()
 clearScreen = do
-    _ <- system "clear"  -- Use "cls" no Windows
+    _ <- system "clear" 
     return ()
 
 
+-- FUNÇÕES DE VALIDAÇÃO E LEITURA DE ENTRADAS
 
 -- Função para verificar se uma string representa um número válido
 isValidDouble :: String -> Bool
@@ -47,7 +48,7 @@ isValidDouble s = case reads s :: [(Double, String)] of
     [(n, "")] -> n >= 0
     _         -> False
 
--- Função para ler e validar um número positivo (pode ser decimal)
+-- Função para ler e validar um número positivo 
 readPositiveDouble :: String -> IO Double
 readPositiveDouble prompt = do
     putStrLn prompt
